@@ -68,7 +68,7 @@ ULONGLONG MyGetProcAddress()
 		// 1. 获取序号
 		DWORD dwID = pExport->Base + dwOrdinal;
 		// 2. 获取导出函数地址
-		ULONGLONG dwFunAddrOffset = pEAT[dwOrdinal];
+		DWORD dwFunAddrOffset = pEAT[dwOrdinal];
 
 		for (DWORD dwIndex = 0; dwIndex < dwFunNameCount; dwIndex++)
 		{
@@ -76,8 +76,8 @@ ULONGLONG MyGetProcAddress()
 			if (pEIT[dwIndex] == dwOrdinal)
 			{
 				// 根据序号索引到函数名称表中的名字
-				ULONGLONG dwNameOffset = pENT[dwIndex];
-				char* pFunName = (char*)((ULONGLONG)dwBase + dwNameOffset);
+				DWORD dwNameOffset = pENT[dwIndex];
+				char* pFunName = (char*)((DWORD)dwBase + dwNameOffset);
 				if (!strcmp(pFunName, "GetProcAddress"))
 				{// 根据函数名称返回函数地址
 					return dwBase + dwFunAddrOffset;
@@ -108,10 +108,8 @@ void  Start()
 	fnLoadLibraryA pfnLoadLibraryA = (fnLoadLibraryA)pfnGetProcAddress((HMODULE)dwBase, "LoadLibraryA");
 	fnGetModuleHandleA pfnGetModuleHandleA = (fnGetModuleHandleA)pfnGetProcAddress((HMODULE)dwBase, "GetModuleHandleA");
 	fnVirtualProtect pfnVirtualProtect = (fnVirtualProtect)pfnGetProcAddress((HMODULE)dwBase, "VirtualProtect");
-	HMODULE hUser32 = (HMODULE)pfnGetModuleHandleA("user32.dll");
-	fnMessageBox pfnMessageBoxA = (fnMessageBox)pfnGetProcAddress(hUser32, "MessageBoxA");
-	HMODULE hKernel32 = (HMODULE)pfnGetModuleHandleA("kernel32.dll");
-	fnExitProcess pfnExitProcess = (fnExitProcess)pfnGetProcAddress(hKernel32, "ExitProcess");
+	fnMessageBox pfnMessageBoxA = (fnMessageBox)pfnGetProcAddress(pfnGetModuleHandleA("user32.dll"), "MessageBoxA");
+	fnExitProcess pfnExitProcess = (fnExitProcess)pfnGetProcAddress(pfnGetModuleHandleA("kernel32.dll"), "ExitProcess");
 
     // 弹出信息框
 	int nRet = pfnMessageBoxA(NULL, "欢迎使用免费64位加壳程序，是否运行主程序？", "Hello PEDIY", MB_YESNO);

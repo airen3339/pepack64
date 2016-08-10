@@ -38,7 +38,7 @@ BOOL Pack(CString strPath, BYTE byXor)
 	CPE objPE;
 	objPE.InitPE(strPath);
 	BOOL bRet = FALSE;
-	DWORD dwVirtualAddr = objPE.XorCode(byXor);
+	DWORD dwVirtualAddr = objPE.XorCode(0x15);
 
 	//2. 获取Stub文件PE信息,将必要的信息设置到Stub中
 	HMODULE hMod = LoadLibrary(L"Stub.dll");
