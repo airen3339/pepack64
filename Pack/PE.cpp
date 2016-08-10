@@ -204,7 +204,7 @@ DWORD CPE::GetSectionData(PBYTE lpImage, DWORD dwSectionIndex, PBYTE& lpBuffer, 
 	PIMAGE_SECTION_HEADER pSection = IMAGE_FIRST_SECTION(pNt);
 	DWORD dwSize = pSection[0].SizeOfRawData;
 
-	DWORD dwCodeAddr = (DWORD)lpImage + pSection[0].VirtualAddress;
+	ULONGLONG dwCodeAddr = (ULONGLONG)lpImage + pSection[0].VirtualAddress;
 	lpBuffer = (PBYTE)dwCodeAddr;
 	dwCodeBaseRVA = pSection[0].VirtualAddress;
 	return dwSize;
@@ -221,7 +221,7 @@ DWORD CPE::XorCode(BYTE byXOR)
 		dwOffset = RVA2OffSet(pSection[1].VirtualAddress, m_pNT);
 		dwVirtualAddr = pSection[1].VirtualAddress;
 	}
-	PBYTE pBase = (PBYTE)((DWORD)m_pFileBase + dwOffset);
+	PBYTE pBase = (PBYTE)((ULONGLONG)m_pFileBase + dwOffset);
 
 	for (DWORD i = 0; i < m_dwCodeSize; i++)
 	{
